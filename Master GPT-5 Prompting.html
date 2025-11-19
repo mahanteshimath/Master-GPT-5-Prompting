@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master GPT-5 Prompting - Complete Guide</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-card-border);
+            overflow-y: auto;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--color-text);
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--color-text);
+            text-align: left;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--color-secondary);
+        }
+
+        .nav-item.active {
+            background: var(--color-primary);
+            color: var(--color-cream-50);
+            font-weight: 500;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-teal-700) 100%);
+            color: var(--color-cream-50);
+            padding: 60px 40px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-base);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .card {
+            background: var(--color-surface);
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--color-primary);
+            color: var(--color-cream-50);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .card-description {
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .code-block {
+            background: var(--color-secondary);
+            padding: 20px;
+            border-radius: var(--radius-base);
+            margin: 20px 0;
+            border-left: 3px solid var(--color-primary);
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            color: var(--color-text);
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--color-primary);
+            color: var(--color-cream-50);
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .example-box {
+            padding: 20px;
+            border-radius: var(--radius-base);
+            border: 2px solid;
+        }
+
+        .example-box.bad {
+            background: rgba(255, 84, 89, 0.05);
+            border-color: var(--color-red-400);
+        }
+
+        .example-box.good {
+            background: rgba(50, 184, 198, 0.05);
+            border-color: var(--color-primary);
+        }
+
+        .example-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .example-box.bad .example-label {
+            color: var(--color-red-400);
+        }
+
+        .example-box.good .example-label {
+            color: var(--color-primary);
+        }
+
+        .example-text {
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .bullet-list {
+            margin: 15px 0;
+        }
+
+        .bullet-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: start;
+        }
+
+        .bullet {
+            width: 6px;
+            height: 6px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .highlight-box {
+            background: rgba(var(--color-teal-500-rgb), 0.1);
+            border-left: 4px solid var(--color-primary);
+            padding: 20px;
+            border-radius: var(--radius-base);
+            margin: 20px 0;
+        }
+
+        .highlight-box strong {
+            color: var(--color-primary);
+        }
+
+        .framework-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-base);
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .framework-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .comparison-table th {
+            background: var(--color-secondary);
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .comparison-table td {
+            color: var(--color-text);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--color-secondary);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        .resource-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--color-secondary);
+            border-radius: var(--radius-base);
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: var(--color-text);
+            transition: all 0.2s;
+        }
+
+        .resource-card:hover {
+            background: var(--color-secondary-hover);
+            transform: translateX(5px);
+        }
+
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: var(--color-cream-50);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .resource-content {
+            flex: 1;
+        }
+
+        .resource-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .resource-description {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--color-primary);
+            color: var(--color-cream-50);
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            z-index: 1000;
+        }
+
+        @media (max-width: 968px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .mobile-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .example-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🚀 GPT-5 Mastery</div>
+            <div class="sidebar-subtitle">Complete Prompting Guide</div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Getting Started</div>
+            <button class="nav-item active" onclick="showSection('overview')">Overview</button>
+            <button class="nav-item" onclick="showSection('architecture')">GPT-5 Architecture</button>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core Techniques</div>
+            <button class="nav-item" onclick="showSection('technique1')">1. Deeper Reasoning</button>
+            <button class="nav-item" onclick="showSection('technique2')">2. Control Verbosity</button>
+            <button class="nav-item" onclick="showSection('technique3')">3. Prompt Optimizer</button>
+            <button class="nav-item" onclick="showSection('technique4')">4. Rubric Grader</button>
+            <button class="nav-item" onclick="showSection('technique5')">5. Meta-Prompting</button>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Advanced Methods</div>
+            <button class="nav-item" onclick="showSection('frameworks')">Prompting Frameworks</button>
+            <button class="nav-item" onclick="showSection('bestpractices')">Best Practices</button>
+            <button class="nav-item" onclick="showSection('mistakes')">Common Mistakes</button>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Reference</div>
+            <button class="nav-item" onclick="showSection('comparison')">Model Comparison</button>
+            <button class="nav-item" onclick="showSection('specs')">Technical Specs</button>
+            <button class="nav-item" onclick="showSection('resources')">Resources</button>
+        </div>
+    </nav>
+
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+    <main class="main-content">
+        <section id="overview" class="section active">
+            <div class="hero">
+                <h1>Master GPT-5 Prompting</h1>
+                <p class="hero-subtitle">Transform lazy prompts into genius-level outputs with proven techniques backed by research</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">45%</div>
+                        <div class="stat-label">Performance Boost</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">23×</div>
+                        <div class="stat-label">Token Efficiency Range</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">400K</div>
+                        <div class="stat-label">Context Window</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Why GPT-5 is Different</h2>
+                <p class="card-description">
+                    GPT-5 represents a fundamental architectural shift. Unlike GPT-4, it uses a <strong>router-based system</strong> that selects between specialized sub-models based on your prompt. This means:
+                </p>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Lazy prompts get routed to lazy models</strong> - Simple queries activate fast but less capable pathways</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>It's hyperliteral</strong> - GPT-5 doesn't make assumptions; you must be explicit</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Prompt phrasing can swing performance 45%</strong> - The difference between genius and junk</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Old GPT-4 techniques don't work</strong> - You need a new playbook</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p><strong>Critical Insight:</strong> Studies show that 90% of AI chatbot responses on certain topics have inaccuracies. But the same model can be 45% more accurate with better prompts. The model isn't the problem—<strong>your prompts are</strong>.</p>
+            </div>
+
+            <div class="card">
+                <h2>What You'll Learn</h2>
+                <p class="card-description">This comprehensive guide covers:</p>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p>The 5 core GPT-5 prompting techniques that unlock superior performance</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p>Advanced frameworks: Chain-of-Thought, Tree-of-Thought, and structured prompting</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p>How GPT-5's router architecture works and how to exploit it</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p>Common mistakes that kill your results (and how to avoid them)</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p>Real-world examples, templates, and copy-paste prompts</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p>Technical specifications, benchmarks, and model comparisons</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="section">
+            <h2>Understanding GPT-5 Architecture</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔀</div>
+                    <h3 class="card-title">The Router System</h3>
+                </div>
+                <p class="card-description">
+                    GPT-5 operates as a sophisticated routing system with multiple internal models. When you submit a prompt, an invisible router analyzes several factors:
+                </p>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Task complexity:</strong> Simple queries → fast models; Complex reasoning → deep thinking</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Tool requirements:</strong> Calculations/API calls → tool-equipped models</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Intent signals:</strong> Phrases like "think step by step" force deeper reasoning</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Prompt structure:</strong> Well-organized prompts get routed more accurately</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚙️</div>
+                    <h3 class="card-title">Internal Model Variants</h3>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-title">gpt-5-main</div>
+                    <p>Fast, high-throughput model for standard queries. Best for routine tasks.</p>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-title">gpt-5-thinking</div>
+                    <p>Deeper reasoning model for complex multi-step tasks. Activates with reasoning triggers.</p>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-title">gpt-5-main-mini & gpt-5-thinking-mini</div>
+                    <p>Smaller variants for efficiency. Used for simpler tasks to save compute.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Key Parameters</h3>
+                </div>
+                
+                <h3>Reasoning Effort</h3>
+                <p class="card-description">Controls how many reasoning tokens the model generates before responding:</p>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Tokens</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Minimal</strong></td>
+                                <td>0-10</td>
+                                <td>Simple tasks, fastest response</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Low</strong></td>
+                                <td>10-100</td>
+                                <td>Routine queries</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Medium</strong></td>
+                                <td>100-1000</td>
+                                <td>Balanced (default)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>High</strong></td>
+                                <td>1000+</td>
+                                <td>Complex problems (23× more tokens)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Verbosity</h3>
+                <p class="card-description">Controls response length and detail:</p>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Low:</strong> ~560 tokens - Concise answers under 150 words</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Medium:</strong> ~849 tokens - Balanced detail with context</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>High:</strong> ~1288 tokens - Comprehensive with examples</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p><strong>Key Takeaway:</strong> GPT-5 with high reasoning effort achieves 68% on the Intelligence Index, while minimal effort scores near GPT-4.1 levels. But high reasoning uses 23× more tokens. Choose wisely based on task complexity.</p>
+            </div>
+        </section>
+
+        <section id="technique1" class="section">
+            <h2>Technique 1: Force Deeper Reasoning</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">1</div>
+                    <div>
+                        <h3 class="card-title">Add Nudge Phrases</h3>
+                        <p class="card-description">The biggest mistake is not telling AI HOW to think. GPT-5's router defaults to shallow processing unless prompted otherwise.</p>
+                    </div>
+                </div>
+
+                <div class="example-grid">
+                    <div class="example-box bad">
+                        <div class="example-label">❌ Weak Prompt</div>
+                        <div class="example-text">Explain quantum computing.</div>
+                    </div>
+                    <div class="example-box good">
+                        <div class="example-label">✅ Strong Prompt</div>
+                        <div class="example-text">Act as a senior renowned physicist with expertise in quantum mechanics. Think deeply about this step by step: Explain quantum computing, covering the fundamental principles, key differences from classical computing, and practical applications. Consider multiple perspectives and implications.</div>
+                    </div>
+                </div>
+
+                <h3>Effective Nudge Phrases</h3>
+                <div class="code-block">
+                    <pre>"Think about this step by step"
+"Think deeply about the implications"
+"Act like you are a [expert role]"
+"Reason comprehensively before answering"
+"Conduct thorough evaluation first"
+"Take your time with this"
+"Consider multiple perspectives"</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'Think about this step by step')">Copy</button>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Why This Works:</strong> Adding these phrases routes your request to GPT-5's "thinking" model instead of the fast model. Testing shows this triggers the visible "thinking" indicator in ChatGPT, signaling deeper reasoning activation.</p>
+                </div>
+
+                <h3>Role-Based Prompting</h3>
+                <p class="card-description">By specifying an expert role, you're not "feeding the AI's ego"—you're signaling to the router that this requires specialized knowledge pathways.</p>
+                
+                <div class="code-block">
+                    <pre>Act as a [senior/renowned/expert] [specific role] with expertise in [domain].
+
+Examples:
+- "Act as a senior software architect with 15 years in distributed systems"
+- "Act as a renowned physicist specializing in quantum mechanics"
+- "Act as an expert financial analyst with deep knowledge of emerging markets"</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'Act as a senior software architect')">Copy</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="technique2" class="section">
+            <h2>Technique 2: Control Verbosity & Format</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">2</div>
+                    <div>
+                        <h3 class="card-title">Be Explicit About Length and Structure</h3>
+                        <p class="card-description">GPT-5 is terrible at guessing how long or detailed your answer should be. You MUST specify verbosity and format.</p>
+                    </div>
+                </div>
+
+                <div class="example-grid">
+                    <div class="example-box bad">
+                        <div class="example-label">❌ Vague Prompt</div>
+                        <div class="example-text">Write a marketing email for my new product.</div>
+                    </div>
+                    <div class="example-box good">
+                        <div class="example-label">✅ Specific Prompt</div>
+                        <div class="example-text">Write a low verbosity marketing email under 150 words. Include: a compelling hook, one key benefit, and a clear call-to-action. Use professional but friendly tone. Format as: Subject line, opening paragraph, benefit statement, closing CTA.</div>
+                    </div>
+                </div>
+
+                <h3>Verbosity Control Templates</h3>
+                
+                <div class="framework-card">
+                    <div class="framework-title">Low Verbosity (Concise)</div>
+                    <div class="code-block">
+                        <pre>"Give me a concise answer under 100 words"
+"Provide a brief summary in 3 bullet points"
+"Write a low verbosity response focusing only on key points"</pre>
+                        <button class="copy-btn" onclick="copyText(this, 'Give me a concise answer under 100 words')">Copy</button>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">Medium Verbosity (Balanced)</div>
+                    <div class="code-block">
+                        <pre>"Provide a medium verbosity response as 5 clear bullet points"
+"Give me a balanced explanation with examples (300-500 words)"
+"Create a structured response with introduction, body, conclusion"</pre>
+                        <button class="copy-btn" onclick="copyText(this, 'Provide a medium verbosity response as 5 clear bullet points')">Copy</button>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">High Verbosity (Comprehensive)</div>
+                    <div class="code-block">
+                        <pre>"Create a comprehensive 800-1000 word analysis with:
+- Detailed breakdown by phase
+- Executive summary (150 words)
+- List of stakeholders with roles
+- Risk assessment
+- Multiple examples and case studies"</pre>
+                        <button class="copy-btn" onclick="copyText(this, 'Create a comprehensive 800-1000 word analysis')">Copy</button>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Performance Data:</strong> Output tokens scale linearly with verbosity. By controlling this parameter, you avoid unnecessary costs while ensuring output matches your needs. Research shows ~560 tokens (low) → ~849 tokens (medium) → ~1288 tokens (high).</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="technique3" class="section">
+            <h2>Technique 3: Use the Prompt Optimizer</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">3</div>
+                    <div>
+                        <h3 class="card-title">Transform Lazy Prompts into Structured Powerhouses</h3>
+                        <p class="card-description">OpenAI has an official prompt optimizer that restructures prompts according to GPT-5 best practices. It can improve task success rates by 40-60%.</p>
+                    </div>
+                </div>
+
+                <h3>Official Optimizer (Paid)</h3>
+                <div class="code-block">
+                    <pre>Access at: platform.openai.com/chat/edit?models=gpt-5&optimize=true
+
+This tool is hidden in the developer platform but transforms vague prompts into structured, hierarchical requests that GPT-5 processes more effectively.</pre>
+                </div>
+
+                <h3>Free Workaround Method</h3>
+                <p class="card-description">Get 90% of the benefit without paying for platform access:</p>
+                
+                <div class="code-block">
+                    <pre>You are an expert prompt engineer. I will give you a task, and you will rewrite it using the official OpenAI GPT-5 prompting guide principles to maximize output quality. 
+
+Make it:
+- Structured with clear sections
+- Specific with exact requirements
+- Optimized for GPT-5's router architecture
+
+Here is the official guide to reference: cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide
+
+Now optimize this prompt: [YOUR PROMPT HERE]</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'You are an expert prompt engineer. I will give you a task...')">Copy Template</button>
+                </div>
+
+                <h3>Example Transformation</h3>
+                <div class="example-grid">
+                    <div class="example-box bad">
+                        <div class="example-label">Original Prompt</div>
+                        <div class="example-text">Build an app like Google Calendar. Write code, tests, show architecture.</div>
+                    </div>
+                    <div class="example-box good">
+                        <div class="example-label">Optimized Output</div>
+                        <div class="example-text">
+                            <strong># Role</strong><br>
+                            You are a senior full-stack developer with expertise in calendar applications.<br><br>
+                            <strong># Task</strong><br>
+                            Design and implement a calendar application with functionality similar to Google Calendar.<br><br>
+                            <strong># Requirements</strong><br>
+                            - Core features: event creation, editing, deletion, viewing<br>
+                            - Data models for events, users, recurring patterns<br>
+                            - RESTful API architecture<br>
+                            - Unit tests with >80% coverage<br>
+                            - Architecture diagram showing component relationships<br><br>
+                            <strong># Deliverables</strong><br>
+                            1. Complete codebase with clear folder structure<br>
+                            2. Comprehensive test suite<br>
+                            3. System architecture diagram<br>
+                            4. README with setup instructions
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>What the Optimizer Does:</strong> Adds clear structure, specifies output format, includes context and constraints, defines success criteria. Studies show optimized prompts dramatically improve task completion rates.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="technique4" class="section">
+            <h2>Technique 4: AI Rubric Grader</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">4</div>
+                    <div>
+                        <h3 class="card-title">Force Self-Reflection Before Output</h3>
+                        <p class="card-description">Make the AI grade its own responses by defining excellence criteria first, then iterating internally to meet that standard. This technique can improve output quality by 30-40% on complex tasks.</p>
+                    </div>
+                </div>
+
+                <h3>Master Template</h3>
+                <div class="code-block">
+                    <pre>I want you to [YOUR TASK HERE], but first I want you to spend time thinking and create a rubric for what a world-class response to this task would look like. 
+
+The rubric should have 5-7 categories that define excellence for this specific task.
+
+Do not show me the rubric. Instead, use that rubric internally to iterate and write the best possible solution, ensuring your response scores 10/10 across all categories.
+
+After delivering your response, briefly note which rubric categories you focused on most.</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'I want you to [YOUR TASK HERE], but first...')">Copy Template</button>
+                </div>
+
+                <h3>Real-World Example</h3>
+                <div class="code-block">
+                    <pre>I want you to design a go-to-market strategy for a B2B SaaS product targeting mid-market companies, but first create an internal rubric with 6-7 categories for what makes an exceptional GTM strategy. 
+
+Use that rubric to iterate internally until you produce a response that scores 10/10 across all dimensions. 
+
+Then deliver the strategy with a brief note on your key focus areas.</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'I want you to design a go-to-market strategy...')">Copy Example</button>
+                </div>
+
+                <h3>Advanced: Two-Model Evaluation</h3>
+                <p class="card-description">Eliminate self-evaluation bias by using separate models:</p>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Step 1:</strong> Use GPT-5 to generate the response</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Step 2:</strong> Use Claude or another model to evaluate it against your criteria</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Step 3:</strong> If score is low, feed the evaluation back to GPT-5 for revision</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Result:</strong> No bias—the model answering isn't evaluating itself</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Why This Works:</strong> You're forcing GPT-5 to define what excellence is, then holding itself accountable. This leverages the model's planning and self-reflection capabilities to produce consistently higher-quality outputs.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="technique5" class="section">
+            <h2>Technique 5: Meta-Prompting</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">5</div>
+                    <div>
+                        <h3 class="card-title">Fix Bad Prompts Without Losing Context</h3>
+                        <p class="card-description">When AI completely misses the mark, don't abandon the conversation. Use meta-prompting to have the AI rewrite your prompt better than you could. The AI knows itself better than you do.</p>
+                    </div>
+                </div>
+
+                <h3>Recovery Template</h3>
+                <div class="code-block">
+                    <pre>The last response wasn't what I wanted.
+
+Desired behavior: [Explain exactly what you wanted]
+For example: Give me three distinct creative concepts with visual descriptions and target audience analysis.
+
+Undesired behavior: [What it gave you instead]
+For example: Instead, you gave me one generic idea without audience specifics.
+
+How would you rewrite my original prompt to get to the desired behavior?</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'The last response wasn\'t what I wanted...')">Copy Template</button>
+                </div>
+
+                <h3>When to Use Meta-Prompting</h3>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>AI gives one generic idea</strong> instead of multiple distinct options</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Response is too vague or too detailed</strong> and doesn't match your needs</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>AI misunderstands the task</strong> completely despite clear instructions</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>You're deep in a conversation</strong> and don't want to lose context</p>
+                    </div>
+                </div>
+
+                <h3>Practical Workflow</h3>
+                <div class="framework-card">
+                    <div class="framework-title">Step 1: Receive Unsatisfactory Response</div>
+                    <p>Don't immediately start a new chat or rephrase yourself</p>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-title">Step 2: Use Meta-Prompt Template</div>
+                    <p>Clearly explain desired vs. undesired behavior</p>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-title">Step 3: Get Rewritten Prompt</div>
+                    <p>GPT-5 will generate an optimized prompt tailored to its architecture</p>
+                </div>
+                <div class="framework-card">
+                    <div class="framework-title">Step 4: Copy and Use</div>
+                    <p>Either continue in current chat or start fresh with the better prompt</p>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Why This Works:</strong> GPT-5 understands its own routing system, processing preferences, and interpretation patterns better than humans do. When asked to redesign prompts, it naturally applies patterns that align with how it actually processes information.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="frameworks" class="section">
+            <h2>Advanced Prompting Frameworks</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧠</div>
+                    <h3 class="card-title">Chain-of-Thought (CoT) Prompting</h3>
+                </div>
+                <p class="card-description">
+                    CoT guides the model through explicit step-by-step reasoning, breaking complex problems into manageable components. Research shows 25-40% improvement on complex reasoning tasks.
+                </p>
+
+                <h3>Zero-Shot CoT (No Examples)</h3>
+                <div class="code-block">
+                    <pre>Question: If a store has 234 apples and sells 58% of them, how many remain?
+
+Let's approach this step by step:</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'Let\'s approach this step by step')">Copy</button>
+                </div>
+
+                <h3>Few-Shot CoT (With Examples)</h3>
+                <div class="code-block">
+                    <pre>Question: If train A leaves at 2pm going 60mph and train B leaves at 3pm going 80mph, when do they meet?
+
+Example reasoning:
+Step 1: Calculate train A's head start (1 hour × 60mph = 60 miles)
+Step 2: Determine relative speed (80mph - 60mph = 20mph closing speed)
+Step 3: Calculate meeting time (60 miles ÷ 20mph = 3 hours after train B starts)
+
+Now solve: [Your problem]</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'Example reasoning:\nStep 1:...')">Copy</button>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Key Insight:</strong> Zero-shot CoT ("Let's think step by step") often outperforms few-shot for reasoning-heavy tasks because the model generates logical paths without being constrained by examples. It achieves 97% accuracy on sentiment classification tasks.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌳</div>
+                    <h3 class="card-title">Tree-of-Thought (ToT) Prompting</h3>
+                </div>
+                <p class="card-description">
+                    ToT explores multiple reasoning paths in parallel, evaluates each branch, and selects the optimal solution. Shows 2-3× improvement on strategic planning tasks.
+                </p>
+
+                <h3>ToT Template</h3>
+                <div class="code-block">
+                    <pre>You are solving [PROBLEM]. Use Tree-of-Thought reasoning:
+
+Step 1: Generate three distinct approaches to this problem. Label them Plan A, Plan B, and Plan C.
+
+Step 2: For each plan, evaluate:
+- Feasibility (1-10)
+- Resource requirements
+- Risk factors
+- Expected outcomes
+
+Step 3: Choose the highest-scoring plan and develop it into a complete solution with detailed implementation steps.
+
+Step 4: Briefly explain why this approach is superior to the alternatives.</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'You are solving [PROBLEM]. Use Tree-of-Thought reasoning...')">Copy Template</button>
+                </div>
+
+                <h3>Real-World Example</h3>
+                <div class="code-block">
+                    <pre>Design a customer retention strategy for a SaaS company experiencing 15% monthly churn.
+
+Use Tree-of-Thought:
+- Branch 1: Product improvement focus
+- Branch 2: Customer success program
+- Branch 3: Pricing/value optimization
+
+Evaluate each for cost, implementation time, and projected impact. Then fully develop the winner with a 90-day action plan.</pre>
+                    <button class="copy-btn" onclick="copyText(this, 'Design a customer retention strategy...')">Copy</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📋</div>
+                    <h3 class="card-title">Structured Prompting (CRAFT Framework)</h3>
+                </div>
+                <p class="card-description">Context, Role, Action, Format, Target - A comprehensive structure for complex tasks.</p>
+
+                <div class="code-block">
+                    <pre># Context
+[Provide relevant background information]
+
+# Role
+You are a [specific expert role with qualifications]
+
+# Action
+[Clear, specific task with success criteria]
+
+# Format
+[Exact output structure requirements]
+
+# Target
+[Who will use this and how]</pre>
+                    <button class="copy-btn" onclick="copyText(this, '# Context\n[Background]\n\n# Role\n...')">Copy Framework</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="bestpractices" class="section">
+            <h2>Best Practices & Guidelines</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">✅</div>
+                    <h3 class="card-title">Eliminate Contradictions</h3>
+                </div>
+                <p class="card-description">Conflicting instructions force GPT-5 to guess priority, leading to inconsistent results.</p>
+
+                <div class="example-grid">
+                    <div class="example-box bad">
+                        <div class="example-label">❌ Contradictory</div>
+                        <div class="example-text">Always wait for manager approval before sending reports. If the report is urgent, send it immediately.</div>
+                    </div>
+                    <div class="example-box good">
+                        <div class="example-label">✅ Clear Hierarchy</div>
+                        <div class="example-text">Report Approval Protocol:<br>
+                        1. Default: Always wait for manager approval<br>
+                        2. Exception: If marked URGENT and deadline &lt; 2 hours, send immediately and notify manager post-send<br>
+                        3. Hierarchy: Deadline takes precedence</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Specify Goal, Method, and Stop Criteria</h3>
+                </div>
+                
+                <div class="code-block">
+                    <pre>&lt;context_gathering&gt;
+Goal: [Exact desired outcome]
+
+Method:
+- [Step-by-step approach]
+- [Resource usage guidelines]
+- [Parallel vs. sequential processing]
+
+Stop Criteria:
+- [Condition 1 that signals completion]
+- [Condition 2 that signals completion]
+- [Maximum iterations or time]
+
+Escalation:
+- If [uncertainty condition], then [action]
+- If [conflict], then [resolution approach]
+
+Depth:
+- [How thorough to be]
+- [When to stop exploring]
+&lt;/context_gathering&gt;</pre>
+                    <button class="copy-btn" onclick="copyText(this, '<context_gathering>\nGoal: ...')">Copy Template</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🏷️</div>
+                    <h3 class="card-title">Use Markdown and XML-Style Tags</h3>
+                </div>
+                <p class="card-description">GPT-5 was trained to recognize structured markup, processing it more reliably than plain text.</p>
+
+                <div class="code-block">
+                    <pre>&lt;instructions&gt;
+[Core directives]
+&lt;/instructions&gt;
+
+&lt;constraints&gt;
+- Never include [forbidden elements]
+- Always verify [critical items]
+- Stop if [condition]
+&lt;/constraints&gt;
+
+&lt;output_format&gt;
+## Section 1
+[Requirements]
+
+## Section 2
+[Requirements]
+&lt;/output_format&gt;</pre>
+                    <button class="copy-btn" onclick="copyText(this, '<instructions>\n[Core directives]\n</instructions>')">Copy Pattern</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔄</div>
+                    <h3 class="card-title">Implement Persistence Instructions</h3>
+                </div>
+                <p class="card-description">Prevent GPT-5 from terminating prematurely or asking unnecessary questions.</p>
+
+                <div class="code-block">
+                    <pre>&lt;persistence&gt;
+- You are an autonomous agent
+- Keep working until the user's query is completely resolved before ending your turn
+- Only terminate when you are certain the problem is solved
+- Never stop due to uncertainty—research or deduce the most reasonable approach and continue
+- Do not ask for confirmation or clarification; make reasonable assumptions, document them, and proceed
+- If you encounter an obstacle, try alternative approaches before reporting inability
+&lt;/persistence&gt;</pre>
+                    <button class="copy-btn" onclick="copyText(this, '<persistence>\n- You are an autonomous agent...')">Copy Pattern</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="mistakes" class="section">
+            <h2>Common Mistakes to Avoid</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚠️</div>
+                    <h3 class="card-title">Top 5 Prompt Engineering Mistakes</h3>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">1. Using GPT-4 Prompting Patterns</div>
+                    <p><strong>Problem:</strong> GPT-5's router architecture differs fundamentally from GPT-4</p>
+                    <p><strong>Fix:</strong> Add explicit reasoning triggers, specify verbosity/format, use structured hierarchies, leverage GPT-5-specific features</p>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">2. Vague Prompt Specifications</div>
+                    <p><strong>Problem:</strong> GPT-5 is hyperliteral and won't make assumptions</p>
+                    <p><strong>Fix:</strong> Define exact success criteria, specify format/length/style explicitly, include examples for non-standard formats, state what to exclude</p>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">3. Conflicting Instructions</div>
+                    <p><strong>Problem:</strong> Contradictions force GPT-5 to guess priority</p>
+                    <p><strong>Fix:</strong> Establish clear rule hierarchy, use if-then logic for exceptions, state overrides explicitly, review prompts for logical conflicts</p>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">4. Accepting First Output</div>
+                    <p><strong>Problem:</strong> GPT-5's default routing may not apply sufficient reasoning</p>
+                    <p><strong>Fix:</strong> Add "think hard" triggers, request a plan before execution, use rubric method, iterate with meta-prompting</p>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">5. Over-Relying on Few-Shot Examples</div>
+                    <p><strong>Problem:</strong> Examples can constrain GPT-5's superior zero-shot capabilities</p>
+                    <p><strong>Fix:</strong> Start with zero-shot + clear instructions, add few-shot only for strict formatting, keep examples minimal (2-3 max), prefer structured instructions</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p><strong>Critical Reminder:</strong> Studies show that for the exact same model, changing prompt phrasing can swing performance by 45%. Most "bad" GPT-5 responses are actually bad prompts.</p>
+            </div>
+        </section>
+
+        <section id="comparison" class="section">
+            <h2>Model Comparison: GPT-5 vs. Competitors</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Benchmark Performance</h3>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>GPQA Diamond</th>
+                            <th>AIME 2025</th>
+                            <th>SWE-bench</th>
+                            <th>Context</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GPT-5</strong></td>
+                            <td>86.4%</td>
+                            <td>94.6%</td>
+                            <td>74.9%</td>
+                            <td>400K</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Claude 4.1 Opus</strong></td>
+                            <td>75.5%</td>
+                            <td>N/A</td>
+                            <td>74.5%</td>
+                            <td>200K</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gemini 2.5 Pro</strong></td>
+                            <td>86.4%</td>
+                            <td>N/A</td>
+                            <td>59.6%</td>
+                            <td>1M</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Grok-4</strong></td>
+                            <td>87.5%</td>
+                            <td>100%</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Best Use Cases by Model</h3>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">GPT-5: Best For</div>
+                    <div class="bullet-list">
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Agentic workflows with tool calling</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Code generation and debugging</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Multimodal reasoning (text + images)</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Complex multi-step problem solving</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">Claude: Best For</div>
+                    <div class="bullet-list">
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Long-form content and creative writing</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>More forgiving of casual prompts</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Safety-critical applications</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Strong code documentation</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">Gemini: Best For</div>
+                    <div class="bullet-list">
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Research-heavy tasks (1M context window)</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Document analysis and synthesis</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Google ecosystem integration</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Multi-source information gathering</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="framework-card">
+                    <div class="framework-title">Grok: Best For</div>
+                    <div class="bullet-list">
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Mathematical reasoning (100% AIME)</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Real-time web access</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Data analysis tasks</p>
+                        </div>
+                        <div class="bullet-item">
+                            <div class="bullet"></div>
+                            <p>Current events and X integration</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="specs" class="section">
+            <h2>Technical Specifications</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚙️</div>
+                    <h3 class="card-title">Context Windows & Memory</h3>
+                </div>
+
+                <h3>API Access</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Total Tokens</th>
+                            <th>Input</th>
+                            <th>Output</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GPT-5</strong></td>
+                            <td>400,000</td>
+                            <td>272,000</td>
+                            <td>128,000</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPT-5 Pro</strong></td>
+                            <td>256,000-272,000</td>
+                            <td>—</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>ChatGPT Interface</h3>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Free tier:</strong> 8,000 tokens</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Plus:</strong> 32,000 tokens (non-reasoning) / 192,000 tokens (thinking mode)</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Pro:</strong> 128,000 tokens</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Enterprise:</strong> 128,000-196,000 tokens</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚡</div>
+                    <h3 class="card-title">Speed & Performance</h3>
+                </div>
+
+                <h3>Tokens per Second</h3>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>GPT-5 (minimal):</strong> 120-150 TPS</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>GPT-5 (high):</strong> 65.5 TPS</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>GPT-4.1:</strong> ~128 TPS</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>GPT-5.1 (adaptive):</strong> 2-3× faster on simple tasks</p>
+                    </div>
+                </div>
+
+                <h3>Time to First Token</h3>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Minimal reasoning:</strong> ~2 seconds</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>High reasoning:</strong> 10-15 seconds</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Adaptive (GPT-5.1):</strong> Automatically adjusts</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💰</div>
+                    <h3 class="card-title">Cost Optimization</h3>
+                </div>
+
+                <h3>GPT-5 API Pricing</h3>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Input:</strong> $1.25 per 1M tokens</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Output:</strong> $10 per 1M tokens</p>
+                    </div>
+                </div>
+
+                <h3>Token Usage by Reasoning Level</h3>
+                <div class="bullet-list">
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Minimal:</strong> 3.5M tokens (Intelligence Index benchmark)</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>High:</strong> 82M tokens (same benchmark)</p>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet"></div>
+                        <p><strong>Ratio:</strong> 23× difference in token consumption</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>Optimal Strategy:</strong> Use minimal/low reasoning for routine tasks, high reasoning only for complex problems requiring multi-step logic. This can reduce costs by up to 95% while maintaining appropriate quality.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="resources" class="section">
+            <h2>Resources & Links</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📚</div>
+                    <h3 class="card-title">Official OpenAI Resources</h3>
+                </div>
+
+                <a href="https://platform.openai.com/chat/edit?models=gpt-5&optimize=true" class="resource-card" target="_blank">
+                    <div class="resource-icon">🔧</div>
+                    <div class="resource-content">
+                        <div class="resource-title">GPT-5 Prompt Optimizer</div>
+                        <div class="resource-description">Official tool to transform lazy prompts into structured powerhouses</div>
+                    </div>
+                </a>
+
+                <a href="https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide" class="resource-card" target="_blank">
+                    <div class="resource-icon">📖</div>
+                    <div class="resource-content">
+                        <div class="resource-title">GPT-5 Prompting Guide</div>
+                        <div class="resource-description">Comprehensive official documentation on GPT-5 best practices</div>
+                    </div>
+                </a>
+
+                <a href="https://cookbook.openai.com/examples/gpt-5/gpt-5_new_params_and_tools" class="resource-card" target="_blank">
+                    <div class="resource-icon">⚙️</div>
+                    <div class="resource-content">
+                        <div class="resource-title">GPT-5 New Parameters</div>
+                        <div class="resource-description">Details on reasoning effort, verbosity, and other configuration options</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🎓</div>
+                    <h3 class="card-title">Learning Resources</h3>
+                </div>
+
+                <a href="https://www.youtube.com/watch?v=90NCGxfoQMY" class="resource-card" target="_blank">
+                    <div class="resource-icon">🎥</div>
+                    <div class="resource-content">
+                        <div class="resource-title">Original Video by Jash Radia</div>
+                        <div class="resource-description">The video that inspired this guide - 7 minutes on GPT-5 techniques</div>
+                    </div>
+                </a>
+
+                <a href="https://www.promptingguide.ai/" class="resource-card" target="_blank">
+                    <div class="resource-icon">📘</div>
+                    <div class="resource-content">
+                        <div class="resource-title">Prompt Engineering Guide</div>
+                        <div class="resource-description">Comprehensive resource covering all prompting techniques</div>
+                    </div>
+                </a>
+
+                <a href="https://learnprompting.org/" class="resource-card" target="_blank">
+                    <div class="resource-icon">🎯</div>
+                    <div class="resource-content">
+                        <div class="resource-title">Learn Prompting</div>
+                        <div class="resource-description">Free course on prompt engineering fundamentals</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔬</div>
+                    <h3 class="card-title">Research Papers</h3>
+                </div>
+
+                <a href="https://arxiv.org/abs/2305.10601" class="resource-card" target="_blank">
+                    <div class="resource-icon">📄</div>
+                    <div class="resource-content">
+                        <div class="resource-title">Tree-of-Thought Prompting</div>
+                        <div class="resource-description">Original research on deliberate problem solving with LLMs</div>
+                    </div>
+                </a>
+
+                <a href="https://arxiv.org/abs/2302.11382" class="resource-card" target="_blank">
+                    <div class="resource-icon">📄</div>
+                    <div class="resource-content">
+                        <div class="resource-title">Prompt Pattern Catalog</div>
+                        <div class="resource-description">Academic catalog of effective prompt engineering patterns</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Highlight active nav item
+            event.target.classList.add('active');
+
+            // Scroll to top on mobile
+            if (window.innerWidth <= 968) {
+                window.scrollTo(0, 0);
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function copyText(button, text) {
+            // Get the text from the code block if no text provided
+            if (!text) {
+                const codeBlock = button.previousElementSibling;
+                text = codeBlock.textContent;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.style.background = '#50c878';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.textContent = '✗ Failed';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 968) {
+                const sidebar = document.getElementById('sidebar');
+                const toggle = document.querySelector('.mobile-toggle');
+                
+                if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
