@@ -1746,28 +1746,81 @@ Depth:
         }
 
         function copyText(button, text) {
-            // Get the text from the code block if no text provided
+            // Determine text to copy. If `text` is falsy, try to read from the
+            // previous element (expected to be a <pre> inside .code-block).
             if (!text) {
                 const codeBlock = button.previousElementSibling;
-                text = codeBlock.textContent;
+                if (codeBlock) {
+                    text = codeBlock.textContent || codeBlock.innerText || '';
+                } else {
+                    text = '';
+                }
             }
 
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = button.textContent;
-                button.textContent = '✓ Copied!';
-                button.style.background = '#50c878';
+            const originalText = button.textContent;
 
+            // Helper to show temporary feedback on the button
+            function flash(statusText, color) {
+                button.textContent = statusText;
+                if (color) button.style.background = color;
                 setTimeout(() => {
                     button.textContent = originalText;
                     button.style.background = '';
                 }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-                button.textContent = '✗ Failed';
-                setTimeout(() => {
-                    button.textContent = 'Copy';
-                }, 2000);
-            });
+            }
+
+            // First try navigator.clipboard (modern browsers, secure contexts)
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    flash('✓ Copied!', '#50c878');
+                }).catch(err => {
+                    // Fallback to older execCommand approach when clipboard API is
+                    // unavailable or rejected (file:// or insecure contexts).
+                    try {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = text;
+                        // Avoid scrolling to bottom
+                        textarea.style.position = 'fixed';
+                        textarea.style.top = '-9999px';
+                        document.body.appendChild(textarea);
+                        textarea.focus();
+                        textarea.select();
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        if (successful) {
+                            flash('✓ Copied!', '#50c878');
+                        } else {
+                            console.error('execCommand copy failed');
+                            flash('✗ Failed');
+                        }
+                    } catch (e) {
+                        console.error('Fallback copy failed:', e);
+                        flash('✗ Failed');
+                    }
+                });
+            } else {
+                // Older browsers / insecure contexts: fallback to execCommand
+                try {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    textarea.style.position = 'fixed';
+                    textarea.style.top = '-9999px';
+                    document.body.appendChild(textarea);
+                    textarea.focus();
+                    textarea.select();
+                    const successful = document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    if (successful) {
+                        flash('✓ Copied!', '#50c878');
+                    } else {
+                        console.error('execCommand copy failed');
+                        flash('✗ Failed');
+                    }
+                } catch (e) {
+                    console.error('Fallback copy failed:', e);
+                    flash('✗ Failed');
+                }
+            }
         }
 
         // Close sidebar when clicking outside on mobile
